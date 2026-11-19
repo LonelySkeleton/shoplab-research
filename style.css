@@ -1,0 +1,287 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6f8;
+    color: #222;
+}
+
+.header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header h1 {
+    margin: 0;
+    color: #2563eb;
+}
+
+.cart {
+    font-size: 15px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 45px auto;
+    padding: 0 24px;
+}
+
+.container h2 {
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.product-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-image {
+    background: #f1f5f9;
+    border-radius: 10px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+}
+
+.product-card h3 {
+    margin-bottom: 5px;
+}
+
+.product-card p {
+    color: #64748b;
+}
+
+.product-card ul {
+    padding-left: 18px;
+    line-height: 1.9;
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+.price {
+    font-size: 26px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+button {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.selection {
+    background: white;
+    margin-top: 25px;
+    padding: 22px;
+    border-radius: 12px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 750px) {
+    .products {
+        grid-template-columns: 1fr;
+    }
+
+    .header-inner {
+        padding: 16px;
+    }
+}
+
+
+/* Анкета предпочтений */
+
+.questionnaire {
+    background: white;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 35px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.questionnaire h2 {
+    margin-top: 0;
+}
+
+.questionnaire h3 {
+    margin-top: 35px;
+}
+
+.questionnaire label {
+    display: block;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.questionnaire input,
+.questionnaire select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    background: white;
+    color: #222;
+}
+
+.questionnaire .field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.questionnaire .field span {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.questionnaire button {
+    margin-top: 35px;
+}
+
+@media (max-width: 750px) {
+    .questionnaire {
+        padding: 22px;
+    }
+}
+
+/* Экспериментальные условия */
+
+.product-card {
+    position: relative;
+}
+
+.product-card.highlighted {
+    border: 3px solid #2563eb;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.18);
+}
+
+.product-card.highlighted button {
+    background: #ea580c;
+    font-weight: bold;
+}
+
+.promo-label {
+    background: #2563eb;
+    color: white;
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.price-note {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.price-details {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    line-height: 1.8;
+}
+
+.price-total {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.confirm-button {
+    margin-top: 12px;
+    background: #15803d;
+}
+
+.confirm-button:hover {
+    background: #166534;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* Информированное согласие */
+
+.consent-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 24px 0;
+    line-height: 1.6;
+    cursor: pointer;
+}
+
+.consent-option input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.secondary-button {
+    margin-top: 12px;
+    background: #64748b;
+}
+
+.secondary-button:hover {
+    background: #475569;
+}
+
+.questionnaire h3 {
+    margin-top: 25px;
+}
+
+.questionnaire p {
+    line-height: 1.7;
+}

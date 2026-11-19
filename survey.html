@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopLab — Заключительная анкета</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="tracking.js" defer></script>
+    <script src="database.js" defer></script>
+    <script src="survey.js" defer></script>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab</h1>
+        <span>Заключительная анкета</span>
+    </div>
+</header>
+
+<main class="container">
+    <section class="questionnaire">
+
+        <h2>Несколько вопросов о вашем выборе</h2>
+
+        <p class="subtitle">
+            Пожалуйста, отвечайте исходя
+            из собственных впечатлений.
+            Здесь нет правильных или
+            неправильных ответов.
+        </p>
+
+        <form id="survey-form">
+
+            <label for="difficulty">
+                Насколько сложно было выбрать товар?
+            </label>
+            <select id="difficulty" required>
+                <option value="">Выберите ответ</option>
+                <option value="1">1 — Очень легко</option>
+                <option value="2">2 — Скорее легко</option>
+                <option value="3">3 — Умеренно сложно</option>
+                <option value="4">4 — Скорее сложно</option>
+                <option value="5">5 — Очень сложно</option>
+            </select>
+
+            <label for="confidence">
+                Насколько вы уверены в своём выборе?
+            </label>
+            <select id="confidence" required>
+                <option value="">Выберите ответ</option>
+                <option value="1">1 — Совсем не уверен(а)</option>
+                <option value="2">2 — Скорее не уверен(а)</option>
+                <option value="3">3 — Умеренно уверен(а)</option>
+                <option value="4">4 — Скорее уверен(а)</option>
+                <option value="5">5 — Полностью уверен(а)</option>
+            </select>
+
+            <label for="noticed">
+                Заметили ли вы элементы оформления
+                или представления информации,
+                которые могли повлиять на ваш выбор?
+            </label>
+            <select id="noticed" required>
+                <option value="">Выберите ответ</option>
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+                <option value="unsure">Не уверен(а)</option>
+            </select>
+
+            <label for="noticed-description">
+                Если заметили, опишите эти элементы
+                своими словами (необязательно).
+            </label>
+            <textarea
+                id="noticed-description"
+                rows="4"
+                placeholder="Ваш ответ"></textarea>
+
+            <label for="price-awareness">
+                Какая итоговая стоимость
+                выбранного товара была указана?
+            </label>
+            <div class="field">
+                <input
+                    id="price-awareness"
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="Сумма">
+                <span>€</span>
+            </div>
+
+            <label for="pressure">
+                Насколько сильно оформление магазина
+                побуждало вас выбрать определённый товар?
+            </label>
+            <select id="pressure" required>
+                <option value="">Выберите ответ</option>
+                <option value="1">1 — Совсем не побуждало</option>
+                <option value="2">2 — Скорее не побуждало</option>
+                <option value="3">3 — Умеренно</option>
+                <option value="4">4 — Скорее сильно</option>
+                <option value="5">5 — Очень сильно</option>
+            </select>
+
+            <button type="submit">
+                Завершить и сохранить результаты
+            </button>
+
+        </form>
+
+        <section id="finish" class="hidden">
+            <h3>Тестирование завершено</h3>
+
+            <p>
+                Благодарим за участие в тестировании
+                интерфейса ShopLab.
+            </p>
+
+            <p>
+                В этом прототипе сравниваются варианты
+                представления характеристик и цен,
+                включая позднее раскрытие обязательного
+                сбора и визуальное выделение товара.
+                Реальная покупка не совершалась.
+            </p>
+
+            <p>
+                Результаты подготовлены для сохранения
+                в файл на вашем компьютере.
+            </p>
+
+            <button id="download-again" type="button">
+                Скачать результаты повторно
+            </button>
+        </section>
+
+    </section>
+</main>
+
+</body>
+</html>

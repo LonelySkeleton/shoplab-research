@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>ShopLab — Предпочтения</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="experiment.js" defer></script>
+    <script src="preferences.js" defer></script>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab</h1>
+        <span>Этап 1: Ваши предпочтения</span>
+    </div>
+</header>
+
+<main class="container">
+    <section class="questionnaire">
+
+        <h2>Расскажите о своих предпочтениях</h2>
+
+        <p class="subtitle">
+            Представьте, что вы выбираете беспроводные
+            наушники для личного использования.
+            Укажите, какие условия покупки
+            для вас наиболее важны.
+        </p>
+
+        <form id="preferences-form">
+
+            <label for="budget">
+                Какую максимальную итоговую сумму
+                вы готовы заплатить, включая доставку?
+            </label>
+
+            <div class="field">
+                <input
+                    type="number"
+                    id="budget"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    required
+                    placeholder="Например, 75"
+                >
+                <span>€</span>
+            </div>
+
+            <h3>Насколько важны характеристики?</h3>
+
+            <p class="subtitle">
+                Оцените каждую характеристику
+                по шкале от 1 до 5.
+            </p>
+
+            <label for="battery">
+                Время автономной работы
+            </label>
+            <select id="battery" required>
+                <option value="">Выберите оценку</option>
+                <option value="1">1 — Совсем не важно</option>
+                <option value="2">2 — Скорее не важно</option>
+                <option value="3">3 — Умеренно важно</option>
+                <option value="4">4 — Важно</option>
+                <option value="5">5 — Очень важно</option>
+            </select>
+
+            <label for="noise">
+                Наличие шумоподавления
+            </label>
+            <select id="noise" required>
+                <option value="">Выберите оценку</option>
+                <option value="1">1 — Совсем не важно</option>
+                <option value="2">2 — Скорее не важно</option>
+                <option value="3">3 — Умеренно важно</option>
+                <option value="4">4 — Важно</option>
+                <option value="5">5 — Очень важно</option>
+            </select>
+
+            <label for="weight">
+                Небольшой вес наушников
+            </label>
+            <select id="weight" required>
+                <option value="">Выберите оценку</option>
+                <option value="1">1 — Совсем не важно</option>
+                <option value="2">2 — Скорее не важно</option>
+                <option value="3">3 — Умеренно важно</option>
+                <option value="4">4 — Важно</option>
+                <option value="5">5 — Очень важно</option>
+            </select>
+
+            <label for="warranty">
+                Продолжительность гарантии
+            </label>
+            <select id="warranty" required>
+                <option value="">Выберите оценку</option>
+                <option value="1">1 — Совсем не важно</option>
+                <option value="2">2 — Скорее не важно</option>
+                <option value="3">3 — Умеренно важно</option>
+                <option value="4">4 — Важно</option>
+                <option value="5">5 — Очень важно</option>
+            </select>
+
+            <button type="submit">
+                Продолжить к выбору товаров
+            </button>
+
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

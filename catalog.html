@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopLab — Каталог</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="experiment.js" defer></script>
+    <script src="tracking.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab</h1>
+        <div class="cart">
+            🛒 Корзина: <span id="cart-count">0</span>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <h2>Выберите наушники</h2>
+
+    <p class="subtitle">
+        Сравните характеристики моделей
+        и выберите наиболее подходящий вариант.
+    </p>
+
+    <section
+        id="products"
+        class="products"
+        aria-label="Каталог наушников">
+    </section>
+
+    <section
+        id="selection"
+        class="selection hidden"
+        aria-live="polite">
+
+        <h3>Ваш выбор</h3>
+
+        <p id="selected-product"></p>
+
+        <div id="price-details"></div>
+
+        <button id="reset-button" type="button">
+            Изменить выбор
+        </button>
+
+        <button id="confirm-button"
+                type="button"
+                class="confirm-button">
+            Подтвердить выбор
+        </button>
+
+        <p id="confirmation-message"
+           class="hidden"></p>
+
+    </section>
+
+</main>
+
+</body>
+</html>
