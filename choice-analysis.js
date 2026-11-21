@@ -7,62 +7,13 @@
  * правильности выбора.
  */
 
-const SHOPLAB_ANALYSIS_PRODUCTS = [
-    {
-        id: "A",
-        battery: 20,
-        weight: 220,
-        noise: false,
-        warranty: 12,
-        basePrice: 4990
-    },
-    {
-        id: "B",
-        battery: 30,
-        weight: 240,
-        noise: true,
-        warranty: 12,
-        basePrice: 5990
-    },
-    {
-        id: "C",
-        battery: 40,
-        weight: 260,
-        noise: true,
-        warranty: 24,
-        basePrice: 6990
-    },
-    {
-        id: "D",
-        battery: 25,
-        weight: 190,
-        noise: false,
-        warranty: 24,
-        basePrice: 5490
-    },
-    {
-        id: "E",
-        battery: 45,
-        weight: 280,
-        noise: true,
-        warranty: 12,
-        basePrice: 6490
-    },
-    {
-        id: "F",
-        battery: 35,
-        weight: 210,
-        noise: true,
-        warranty: 36,
-        basePrice: 7490
-    }
-];
+const SHOPLAB_ANALYSIS_PRODUCTS = SHOPLAB_PRODUCTS.map(p => ({...p, battery: parseInt(p.battery), weight: parseInt(p.weight), noise: p.noise === "Есть", warranty: parseInt(p.warranty)}));
 
 function calculateChoiceAlignment(
     preferences,
     selectedProductId
 ) {
-    const serviceFee = 700;
+    const pricing = getPricing(preferences);
     const budget = Number(preferences.budget);
 
     // Нормализация относительно диапазонов
@@ -111,7 +62,7 @@ function calculateChoiceAlignment(
                 ) / totalWeight;
 
             const finalPrice =
-                product.basePrice + serviceFee;
+                pricing.products[product.id].finalPrice;
 
             return {
                 productId: product.id,

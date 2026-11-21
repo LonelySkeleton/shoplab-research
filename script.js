@@ -13,14 +13,15 @@ const consent = JSON.parse(
 
 if (!consent || consent.accepted !== true) {
     window.location.replace("index.html");
-} else if (!experiment || !preferences) {
-    window.location.replace("preferences.html");
+} else if (!experiment || !preferences || !preferences.pricing) {
+    window.location.replace("index.html");
 } else {
     startCatalog();
 }
 
 function startCatalog() {
-    const SERVICE_FEE = 700;
+    const pricing = getPricing(preferences);
+    const SERVICE_FEE = pricing.serviceFee;
 
     const formatPrice = function(value) {
         return new Intl.NumberFormat("ru-RU", {
@@ -30,142 +31,12 @@ function startCatalog() {
         }).format(value);
     };
 
-    const products = [
-        {
-            id: "A",
-            name: "Nova Sound A",
-            basePrice: 4990,
-            battery: "20 часов",
-            weight: "220 г",
-            noise: "Нет",
-            warranty: "12 месяцев",
-            bluetooth: "5.0",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Нет",
-            range: "10 м",
-            colors: "2",
-            water: "Нет",
-            controls: "Кнопки"
-        },
-        {
-            id: "B",
-            name: "Nova Sound B",
-            basePrice: 5990,
-            battery: "30 часов",
-            weight: "240 г",
-            noise: "Есть",
-            warranty: "12 месяцев",
-            bluetooth: "5.2",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Есть",
-            range: "10 м",
-            colors: "3",
-            water: "Нет",
-            controls: "Кнопки"
-        },
-        {
-            id: "C",
-            name: "Nova Sound C",
-            basePrice: 6990,
-            battery: "40 часов",
-            weight: "260 г",
-            noise: "Есть",
-            warranty: "24 месяца",
-            bluetooth: "5.3",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Есть",
-            range: "15 м",
-            colors: "3",
-            water: "IPX4",
-            controls: "Сенсор"
-        },
-        {
-            id: "D",
-            name: "Nova Sound D",
-            basePrice: 5490,
-            battery: "25 часов",
-            weight: "190 г",
-            noise: "Нет",
-            warranty: "24 месяца",
-            bluetooth: "5.1",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Есть",
-            range: "10 м",
-            colors: "4",
-            water: "Нет",
-            controls: "Кнопки"
-        },
-        {
-            id: "E",
-            name: "Nova Sound E",
-            basePrice: 6490,
-            battery: "45 часов",
-            weight: "280 г",
-            noise: "Есть",
-            warranty: "12 месяцев",
-            bluetooth: "5.3",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Нет",
-            range: "15 м",
-            colors: "2",
-            water: "IPX4",
-            controls: "Кнопки"
-        },
-        {
-            id: "F",
-            name: "Nova Sound F",
-            basePrice: 7490,
-            battery: "35 часов",
-            weight: "210 г",
-            noise: "Есть",
-            warranty: "36 месяцев",
-            bluetooth: "5.3",
-            charging: "USB-C",
-            microphone: "Есть",
-            foldable: "Есть",
-            range: "15 м",
-            colors: "4",
-            water: "IPX4",
-            controls: "Сенсор"
-        }
-    ];
-
-    const attributes = [
-        ["Автономность", "battery"],
-        ["Вес", "weight"],
-        ["Шумоподавление", "noise"],
-        ["Гарантия", "warranty"],
-        ["Bluetooth", "bluetooth"],
-        ["Зарядка", "charging"],
-        ["Микрофон", "microphone"],
-        ["Складная конструкция", "foldable"],
-        ["Радиус действия", "range"],
-        ["Количество цветов", "colors"],
-        ["Защита от воды", "water"],
-        ["Управление", "controls"]
-    ];
-
-    const attributeCounts = {
-        low: 4,
-        medium: 8,
-        high: 12
-    };
-
-    const attributeCount =
-        attributeCounts[experiment.cognitiveLoad];
-
-    const visibleAttributes =
-        attributes.slice(0, attributeCount);
+    const products = SHOPLAB_PRODUCTS.map(product => ({...product, ...pricing.products[product.id]}));
+    const visibleAttributes = getVisibleAttributes(experiment.cognitiveLoad);
 
     const container =
         document.getElementById("products");
 
-    let selectedProduct = null;
 
     function renderProducts() {
         container.innerHTML = "";
@@ -260,14 +131,20 @@ function startCatalog() {
             );
 
             button.textContent = alreadyAdded
-                ? "В корзине ✓"
+                ? "Удалить из корзины"
                 : "В корзину";
 
-            button.disabled = alreadyAdded;
-
+            if (alreadyAdded) {
+                button.classList.add("remove-from-selection");
+                button.setAttribute("aria-label", "Убрать " + product.name + " из выбранных");
+            }
 
             button.addEventListener("click", function() {
-                chooseProduct(product);
+                if (alreadyAdded) {
+                    removeFromSelected(product.id);
+                } else {
+                    chooseProduct(product);
+                }
             });
 
             card.appendChild(button);
@@ -316,6 +193,34 @@ function startCatalog() {
     }
 
 
+    function removeFromSelected(productId) {
+        const cartItems = JSON.parse(
+            sessionStorage.getItem("shoplab_cart") || "[]"
+        );
+
+        const updatedItems = cartItems.filter(
+            item => item.productId !== productId
+        );
+
+        if (updatedItems.length === cartItems.length) {
+            return;
+        }
+
+        sessionStorage.setItem(
+            "shoplab_cart",
+            JSON.stringify(updatedItems)
+        );
+
+        logEvent("cart_item_removed", {
+            productId: productId,
+            cartSize: updatedItems.length,
+            source: "catalog"
+        });
+
+        updateCartCount();
+        renderProducts();
+    }
+
     function updateCartCount() {
         const cartItems = JSON.parse(
             sessionStorage.getItem("shoplab_cart") || "[]"
@@ -323,6 +228,9 @@ function startCatalog() {
 
         document.getElementById("cart-count").textContent =
             cartItems.length;
+        document.getElementById("cart-panel-count").textContent = cartItems.length;
+        document.getElementById("cart-panel").classList.toggle("hidden", cartItems.length === 0);
+        document.body.classList.toggle("has-cart-panel", cartItems.length > 0);
     }
 
     
@@ -333,6 +241,6 @@ function startCatalog() {
         group: experiment.group,
         cognitiveLoad: experiment.cognitiveLoad,
         darkPattern: experiment.darkPattern,
-        studyVersion: "shoplab-2.2-multi-cart"
+        studyVersion: SHOPLAB_VERSION
     });
 }

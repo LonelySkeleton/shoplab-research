@@ -8,6 +8,8 @@
     <title>ShopLab — Предпочтения</title>
     <link rel="stylesheet" href="style.css">
     <script src="experiment.js" defer></script>
+    <script src="products.js" defer></script>
+    <script src="pricing.js" defer></script>
     <script src="preferences.js" defer></script>
 </head>
 <body>
@@ -36,7 +38,7 @@
 
                 В конце необходимо выбрать одну модель,
                 которую вы предпочли бы приобрести.
-                Реальная покупка не совершается.
+                Принимайте решение так, как если бы покупали наушники за собственные средства.
         </p>
 
         <form id="preferences-form">
@@ -50,11 +52,8 @@
                 <input
                     type="number"
                     id="budget"
-                    min="100"
-                    max="100000"
                     step="1"
                     required
-                    placeholder="Например, 7 000"
                 >
                 <span>₽</span>
             </div>

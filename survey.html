@@ -12,6 +12,8 @@
 
     <script src="tracking.js" defer></script>
     <script src="database.js" defer></script>
+    <script src="products.js" defer></script>
+    <script src="pricing.js" defer></script>
     <script src="choice-analysis.js" defer></script>
     <script src="survey.js" defer></script>
 </head>
@@ -118,6 +120,15 @@
                 <option value="5">5 — Очень сильно</option>
             </select>
 
+            <label for="realism">Насколько ваш выбор соответствовал тому, как вы приняли бы решение при покупке за собственные средства?</label>
+            <select id="realism" required>
+                <option value="">Выберите ответ</option>
+                <option value="1">1 — Совершенно не соответствовал</option>
+                <option value="2">2 — Скорее не соответствовал</option>
+                <option value="3">3 — Частично соответствовал</option>
+                <option value="4">4 — Скорее соответствовал</option>
+                <option value="5">5 — Полностью соответствовал</option>
+            </select>
             <button type="submit">
                 Завершить и сохранить результаты
             </button>

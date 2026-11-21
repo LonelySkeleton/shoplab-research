@@ -40,7 +40,7 @@ consentForm.addEventListener("submit", function(event) {
     const consent = {
         accepted: true,
         acceptedAt: new Date().toISOString(),
-        consentVersion: "draft-v1"
+        consentVersion: "draft-v2"
     };
 
     sessionStorage.setItem(

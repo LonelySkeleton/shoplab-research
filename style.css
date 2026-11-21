@@ -232,3 +232,24 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   .product-card, .cart-item, .product-image img, button, .cart-link { transition: none; }
   .product-card:hover, button:hover:not(:disabled) { transform: none; }
 }
+
+/* Переход в корзину и характеристики */
+.has-cart-panel { padding-bottom: 110px; }
+.cart-panel { position: fixed; z-index: 20; bottom: 0; left: 0; right: 0; background: #063c48; color: white; padding: 16px max(20px, calc((100vw - 1144px)/2)); display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 -4px 24px #0002; }
+.cart-panel-link { background: #d8ff54; color: #103b35; padding: 12px 20px; border-radius: 12px; font-weight: 700; text-decoration: none; text-align: center; }
+.cart-specs { grid-column: 3; grid-row: 3; margin: 4px 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
+@media(max-width: 500px) { .cart-specs { grid-column: 1 / -1; } .cart-panel { flex-wrap: wrap; } .has-cart-panel { padding-bottom: 150px; } }
+
+/* Удаление товара из выбранных прямо в каталоге */
+.product-card button.remove-from-selection,
+.product-card.highlighted button.remove-from-selection {
+    background: #fff4eb;
+    color: #873c20;
+    border: 2px solid #e9a889;
+    box-shadow: none;
+}
+.product-card button.remove-from-selection:hover:not(:disabled),
+.product-card.highlighted button.remove-from-selection:hover:not(:disabled) {
+    background: #ffe5d3;
+    box-shadow: none;
+}

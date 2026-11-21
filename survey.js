@@ -11,6 +11,8 @@ const consent = JSON.parse(
 
 if (!consent || consent.accepted !== true) {
     window.location.replace("index.html");
+} else if (existingResult && existingResult.studyVersion !== SHOPLAB_VERSION) {
+    window.location.replace("index.html");
 } else if (!existingResult) {
     window.location.replace("catalog.html");
 }
@@ -101,6 +103,7 @@ surveyForm.addEventListener("submit", async function(event) {
                         "price-awareness"
                     ).value
                 ),
+        realism: Number(document.getElementById("realism").value),
         perceivedPressure: Number(
             document.getElementById("pressure").value
         )
@@ -203,6 +206,7 @@ surveyForm.addEventListener("submit", async function(event) {
         preferences,
         choice,
         survey,        
+        pricing: getPricing(preferences),
         choiceAlignment,
         behavioralMeasures: {
             decisionTimeMs,
@@ -247,6 +251,7 @@ surveyForm.addEventListener("submit", async function(event) {
                     : selections[0].details.productId !==
                     choice.selectedProduct,
 
+            recalledPriceAbsoluteError: survey.recalledFinalPrice === null ? null : Math.abs(survey.recalledFinalPrice - choice.finalPrice),
             recalledPriceCorrect:
                 survey.recalledFinalPrice === null
                     ? null

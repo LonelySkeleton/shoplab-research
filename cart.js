@@ -11,7 +11,7 @@ const consent = JSON.parse(
     sessionStorage.getItem("shoplab_consent") || "null"
 );
 
-const SERVICE_FEE = 700;
+
 
 function formatPrice(value) {
     return new Intl.NumberFormat("ru-RU", {
@@ -23,13 +23,15 @@ function formatPrice(value) {
 
 if (!consent || consent.accepted !== true) {
     window.location.replace("index.html");
-} else if (!experiment || !preferences) {
-    window.location.replace("preferences.html");
+} else if (!experiment || !preferences || !preferences.pricing) {
+    window.location.replace("index.html");
 } else {
     startCart();
 }
 
 function startCart() {
+    const pricing = getPricing(preferences);
+    const SERVICE_FEE = pricing.serviceFee;
     const productContainer =
         document.getElementById("cart-product");
 
@@ -49,6 +51,7 @@ function startCart() {
         sessionStorage.getItem("shoplab_cart") || "[]"
     );
 
+    cartItems = cartItems.map(item => ({...item, basePrice: pricing.products[item.productId].basePrice}));
     let selectedId = null;
 
     function saveCart() {
@@ -126,7 +129,15 @@ function startCart() {
                 renderCart();
             });
 
-            row.append(radio, photo, label, price);
+            const specs = document.createElement("ul");
+            specs.className = "cart-specs";
+            const product = SHOPLAB_PRODUCTS.find(p => p.id === item.productId);
+            for (const [name, key] of getVisibleAttributes(experiment.cognitiveLoad)) {
+                const li = document.createElement("li");
+                li.textContent = name + ": " + product[key];
+                specs.appendChild(li);
+            }
+            row.append(radio, photo, label, price, specs);
             productContainer.appendChild(row);
         });
 
@@ -209,7 +220,9 @@ function startCart() {
             serviceFee: SERVICE_FEE,
             finalPrice: total,
             currency: "RUB",
-            studyVersion: "shoplab-2.2-multi-cart",
+            studyVersion: SHOPLAB_VERSION,
+            pricingMode: pricing.pricingMode,
+            priceMultiplier: pricing.multiplier,
             statedBudget: budget,
             exceedsBudget: total > budget,
             cartProductIds: cartItems.map(

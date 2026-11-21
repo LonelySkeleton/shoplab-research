@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>ShopLab — Тестирование</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab — Тестирование</h1>
+    </div>
+</header>
+
+<main class="container">
+    <section class="questionnaire">
+
+        <h2>Выберите экспериментальную группу</h2>
+
+        <p class="subtitle">
+            Эта страница предназначена только
+            для проверки интерфейсов.
+        </p>
+
+        <label for="test-group">Группа</label>
+
+        <select id="test-group">
+            <option value="G1">G1 — Низкая / Нейтральный</option>
+            <option value="G2">G2 — Низкая / Скрытые расходы</option>
+            <option value="G3">G3 — Низкая / Визуальное смещение</option>
+            <option value="G4">G4 — Средняя / Нейтральный</option>
+            <option value="G5">G5 — Средняя / Скрытые расходы</option>
+            <option value="G6">G6 — Средняя / Визуальное смещение</option>
+            <option value="G7">G7 — Высокая / Нейтральный</option>
+            <option value="G8">G8 — Высокая / Скрытые расходы</option>
+            <option value="G9">G9 — Высокая / Визуальное смещение</option>
+        </select>
+
+        <label for="test-budget">Бюджет (2 000–30 000 ₽)</label>
+        <input id="test-budget" type="number" min="2000" max="30000" step="1" value="7000">
+        <button id="launch-test" type="button">
+            Открыть выбранную группу
+        </button>
+
+    </section>
+</main>
+
+<script src="experiment.js"></script>
+<script src="products.js"></script>
+<script src="pricing.js"></script>
+
+<script>
+    document.getElementById("launch-test")
+        .addEventListener("click", function() {
+
+        const group = document.getElementById(
+            "test-group"
+        ).value;
+
+        const condition = experimentalConditions.find(
+            item => item.group === group
+        );
+
+        const budget = Number(document.getElementById("test-budget").value);
+        if (!validBudget(budget)) { alert("Некорректный бюджет"); return; }
+        const experiment = {
+            participantId: "TEST-" + crypto.randomUUID(),
+            group: condition.group,
+            cognitiveLoad: condition.load,
+            darkPattern: condition.pattern,
+            startedAt: new Date().toISOString(),
+            testMode: true
+        };
+
+        sessionStorage.setItem(
+            "shoplab_experiment",
+            JSON.stringify(experiment)
+        );
+
+        sessionStorage.setItem(
+            "shoplab_preferences",
+            JSON.stringify({
+                budget,
+                pricing: calculatePricing(budget),
+                battery: 4,
+                noise: 3,
+                weight: 2,
+                warranty: 5
+            })
+        );
+
+        
+        sessionStorage.removeItem("shoplab_cart");
+        sessionStorage.removeItem("shoplab_result");
+        sessionStorage.removeItem("shoplab_events");
+        sessionStorage.removeItem("shoplab_complete");
+        sessionStorage.removeItem("shoplab_upload_status");
+
+
+        sessionStorage.setItem(
+            "shoplab_consent",
+              JSON.stringify({
+                accepted: true,
+                acceptedAt: new Date().toISOString(),
+                consentVersion: "test-only"
+            })
+        );
+        window.location.href = "catalog.html";
+    });
+</script>
+
+<script src="number-input-fix.js" defer></script>
+</body>
+</html>

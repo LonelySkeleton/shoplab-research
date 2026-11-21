@@ -35,6 +35,15 @@ form.addEventListener("submit", function(event) {
         )
     };
 
+    if (!validBudget(preferences.budget)) {
+        alert("Введите целую сумму от 2 000 до 30 000 ₽.");
+        return;
+    }
+    if (sessionStorage.getItem("shoplab_experiment") && JSON.parse(sessionStorage.getItem("shoplab_preferences") || "null")?.pricing) {
+        window.location.href = "catalog.html";
+        return;
+    }
+    preferences.pricing = calculatePricing(preferences.budget);
     sessionStorage.setItem(
         "shoplab_preferences",
         JSON.stringify(preferences)
