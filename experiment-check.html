@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopLab — Проверка эксперимента</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .check-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        .check-table th,
+        .check-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .check-table th {
+            background: #f1f5f9;
+        }
+
+        .check-pass {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .check-fail {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .check-table-wrap {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab</h1>
+        <span>Проверка эксперимента</span>
+    </div>
+</header>
+
+<main class="container">
+    <h2>Проверка G1–G9</h2>
+
+    <p class="subtitle">
+        Эта страница предназначена только
+        для разработчика и не должна
+        использоваться участниками.
+    </p>
+
+    <button id="run-check" type="button">
+        Проверить группы
+    </button>
+
+    <div class="check-table-wrap">
+        <table class="check-table">
+            <thead>
+                <tr>
+                    <th>Группа</th>
+                    <th>Нагрузка</th>
+                    <th>Характеристик</th>
+                    <th>Интерфейс</th>
+                    <th>Проверка</th>
+                </tr>
+            </thead>
+
+            <tbody id="check-results"></tbody>
+        </table>
+    </div>
+</main>
+
+<script src="experiment.js"></script>
+
+<script>
+        
+    const expectedGroups = [
+        { group: "G1", load: "low", pattern: "neutral" },
+        { group: "G2", load: "low", pattern: "hidden_costs" },
+        { group: "G3", load: "low", pattern: "visual_misdirection" },
+
+        { group: "G4", load: "medium", pattern: "neutral" },
+        { group: "G5", load: "medium", pattern: "hidden_costs" },
+        { group: "G6", load: "medium", pattern: "visual_misdirection" },
+
+        { group: "G7", load: "high", pattern: "neutral" },
+        { group: "G8", load: "high", pattern: "hidden_costs" },
+        { group: "G9", load: "high", pattern: "visual_misdirection" }
+    ];
+
+
+    const attributeCounts = {
+        low: 4,
+        medium: 8,
+        high: 12
+    };
+
+    
+document.getElementById("run-check")
+    .addEventListener("click", function() {
+
+        const tbody =
+            document.getElementById("check-results");
+
+        tbody.innerHTML = "";
+
+        expectedGroups.forEach(function(expected) {
+
+            const actual = experimentalConditions.find(
+                item => item.group === expected.group
+            );
+
+            const correct =
+                actual !== undefined &&
+                actual.load === expected.load &&
+                actual.pattern === expected.pattern;
+
+            const count = actual
+                ? attributeCounts[actual.load]
+                : "—";
+
+            const row = document.createElement("tr");
+
+            const values = [
+                expected.group,
+                actual?.load ?? "Не найдена",
+                count ?? "Неизвестно",
+                actual?.pattern ?? "Не найден",
+                correct ? "✓ OK" : "✗ Ошибка"
+            ];
+
+            values.forEach(function(value, index) {
+                const cell = document.createElement("td");
+
+                cell.textContent = value;
+
+                if (index === 4) {
+                    cell.className = correct
+                        ? "check-pass"
+                        : "check-fail";
+                }
+
+                row.appendChild(cell);
+            });
+
+            tbody.appendChild(row);
+        });
+
+        const actualGroupNames = experimentalConditions.map(
+            item => item.group
+        );
+
+        const uniqueGroupNames =
+            new Set(actualGroupNames);
+
+        if (
+            experimentalConditions.length !== 9 ||
+            uniqueGroupNames.size !== 9
+        ) {
+            alert(
+                "Внимание: количество групп или " +
+                "уникальность их названий нарушены!"
+            );
+        }
+    });
+
+
+
+</script>
+
+</body>
+</html>

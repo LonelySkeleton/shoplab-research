@@ -5,11 +5,13 @@ const declineButton = document.getElementById(
     "decline-button"
 );
 
+
 function clearPreviousSession() {
     const keys = [
         "shoplab_consent",
         "shoplab_preferences",
         "shoplab_experiment",
+        "shoplab_cart",
         "shoplab_events",
         "shoplab_result",
         "shoplab_complete",
@@ -20,6 +22,7 @@ function clearPreviousSession() {
         sessionStorage.removeItem(key);
     });
 }
+
 
 consentForm.addEventListener("submit", function(event) {
     event.preventDefault();

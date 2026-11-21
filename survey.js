@@ -15,7 +15,36 @@ if (!consent || consent.accepted !== true) {
     window.location.replace("catalog.html");
 }
 
-let completedData = null;
+let completedData = JSON.parse(
+    sessionStorage.getItem("shoplab_complete") || "null"
+);
+
+
+if (
+    completedData &&
+    sessionStorage.getItem(
+        "shoplab_upload_status"
+    ) === "saved"
+) {
+    surveyForm.classList.add("hidden");
+
+    document.getElementById("finish")
+        .classList.remove("hidden");
+
+    document.getElementById("survey-intro")
+        .classList.add("hidden");
+
+    const statusMessage =
+        document.getElementById(
+            "save-status-message"
+        );
+
+    if (statusMessage) {
+        statusMessage.textContent =
+            "Результаты уже были успешно сохранены.";
+    }
+}
+
 
 function downloadResults(data) {
     const json = JSON.stringify(data, null, 2);
@@ -49,7 +78,10 @@ surveyForm.addEventListener("submit", async function(event) {
 
     submitButton.disabled = true;
     submitButton.textContent = "Сохранение...";
-
+    if (completedData) {
+        await submitCompletedResults();
+        return;
+}
     const survey = {
         difficulty: Number(
             document.getElementById("difficulty").value
@@ -112,30 +144,117 @@ surveyForm.addEventListener("submit", async function(event) {
         e => e.eventType === "selection_reset"
     );
 
+
+    const cartAdditions = events.filter(
+        e => e.eventType === "cart_item_added"
+    );
+
+    const cartRemovals = events.filter(
+        e => e.eventType === "cart_item_removed"
+    );
+
+    const cartVisits = events.filter(
+        e => e.eventType === "cart_opened"
+    );
+
+    const returnsToCatalog = events.filter(
+        e => e.eventType === "returned_to_catalog"
+    );
+
+    const cartComparisons = events.filter(
+        e => e.eventType === "cart_product_compared"
+    );
+
+    const firstCartOpened = cartVisits[0] || null;
+
+    const cartToConfirmationMs =
+        firstCartOpened && choiceConfirmed
+            ? new Date(choiceConfirmed.timestamp).getTime() -
+            new Date(firstCartOpened.timestamp).getTime()
+            : null;
+
+    const uniqueProductsAdded = [
+        ...new Set(
+            cartAdditions.map(
+                e => e.details.productId
+            )
+        )
+    ];
+
+    const firstComparedProduct =
+        cartComparisons[0]?.details.productId || null;
+
+
     const decisionTimeMs =
         catalogOpened && choiceConfirmed
             ? new Date(choiceConfirmed.timestamp).getTime() -
               new Date(catalogOpened.timestamp).getTime()
             : null;
+    
+    const choiceAlignment = calculateChoiceAlignment(
+        preferences,
+        choice.selectedProduct
+    );
+
 
     completedData = {
         consent,
         experiment,
         preferences,
         choice,
-        survey,
+        survey,        
+        choiceAlignment,
         behavioralMeasures: {
             decisionTimeMs,
+
             firstSelectedProduct:
                 selections[0]?.details.productId || null,
+
             numberOfSelections: selections.length,
+
             numberOfResets: resets.length,
+
+            numberOfCartAdditions: cartAdditions.length,
+
+            numberOfCartRemovals: cartRemovals.length,
+
+            numberOfCartVisits: cartVisits.length,
+
+            numberOfReturnsToCatalog:
+                returnsToCatalog.length,
+
+            numberOfCartComparisons:
+                cartComparisons.length,
+
+            numberOfUniqueProductsAdded:
+                uniqueProductsAdded.length,
+
+            uniqueProductsAdded,
+
+            firstComparedProduct,
+
+            cartToConfirmationMs,
+
+            changedInitialCartSelection:
+                firstComparedProduct === null
+                    ? null
+                    : firstComparedProduct !==
+                    choice.selectedProduct,
+            
+            changedFirstAddedProduct:
+                selections.length === 0
+                    ? null
+                    : selections[0].details.productId !==
+                    choice.selectedProduct,
+
             recalledPriceCorrect:
                 survey.recalledFinalPrice === null
                     ? null
                     : survey.recalledFinalPrice ===
-                      choice.finalPrice
+                    choice.finalPrice
         },
+
+
         events,
         completedAt: new Date().toISOString()
     };
@@ -146,6 +265,22 @@ surveyForm.addEventListener("submit", async function(event) {
     );
 
     const finish = document.getElementById("finish");
+
+    
+    await submitCompletedResults();
+
+});
+
+
+async function submitCompletedResults() {
+    const finish = document.getElementById("finish");
+
+    const submitButton = surveyForm.querySelector(
+        'button[type="submit"]'
+    );
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Сохранение...";
 
     try {
         await saveToDatabase(completedData);
@@ -158,12 +293,19 @@ surveyForm.addEventListener("submit", async function(event) {
         surveyForm.classList.add("hidden");
         finish.classList.remove("hidden");
 
-        finish.querySelector("h3").textContent =
-            "Результаты сохранены";
+        document.getElementById("survey-intro")
+            .classList.add("hidden");
 
-        finish.querySelector("p").textContent =
-            "Результаты успешно отправлены " +
-            "в исследовательскую базу данных.";
+        const statusMessage =
+            document.getElementById(
+                "save-status-message"
+            );
+
+        if (statusMessage) {
+            statusMessage.textContent =
+                "Результаты успешно отправлены " +
+                "в исследовательскую базу данных.";
+        }
 
     } catch (error) {
         console.error("Ошибка сохранения:", error);
@@ -174,9 +316,9 @@ surveyForm.addEventListener("submit", async function(event) {
         );
 
         alert(
-            "Не удалось отправить результаты в базу. " +
-            "Сейчас будет скачана резервная копия. " +
-            "Попробуйте отправить данные повторно."
+            "Не удалось подтвердить сохранение " +
+            "результатов. Будет скачана " +
+            "резервная копия."
         );
 
         downloadResults(completedData);
@@ -184,10 +326,9 @@ surveyForm.addEventListener("submit", async function(event) {
         submitButton.disabled = false;
         submitButton.textContent =
             "Повторить отправку результатов";
-
-        return;
     }
-});
+}
+
 
 document.getElementById("download-again")
     .addEventListener("click", function() {

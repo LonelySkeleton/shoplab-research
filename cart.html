@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopLab — Корзина</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="tracking.js" defer></script>
+    <script src="cart.js" defer></script>
+</head>
+
+<body>
+<header class="header">
+    <div class="header-inner">
+        <h1>ShopLab</h1>
+        <span>Экспериментальный магазин</span>
+    </div>
+</header>
+
+<main class="container">
+    <section class="questionnaire">
+        <h2>Ваша корзина</h2>
+
+        <p class="subtitle">
+            Проверьте выбранный товар.
+            Это имитация покупки — оплата не требуется.
+        </p>
+
+        <div id="cart-product"></div>
+
+        <div id="cart-price-details"
+             class="price-details"></div>
+
+        <div class="cart-actions">
+            <button id="confirm-cart"
+                    type="button">
+                Подтвердить выбор
+            </button>
+
+            <button id="change-product"
+                    type="button"
+                    class="secondary-button">
+                Вернуться к товарам
+            </button>
+
+            <button id="remove-product"
+                    type="button"
+                    class="secondary-button">
+                Удалить выбранный товар из корзины
+            </button>
+        </div>
+
+        <p id="cart-message" class="hidden"></p>
+    </section>
+</main>
+</body>
+</html>

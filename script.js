@@ -1,10 +1,10 @@
 
 const experiment = JSON.parse(
-    sessionStorage.getItem("shoplab_experiment")
+    sessionStorage.getItem("shoplab_experiment") || "null"
 );
 
 const preferences = JSON.parse(
-    sessionStorage.getItem("shoplab_preferences")
+    sessionStorage.getItem("shoplab_preferences") || "null"
 );
 
 const consent = JSON.parse(
@@ -20,13 +20,21 @@ if (!consent || consent.accepted !== true) {
 }
 
 function startCatalog() {
-    const SERVICE_FEE = 10;
+    const SERVICE_FEE = 700;
+
+    const formatPrice = function(value) {
+        return new Intl.NumberFormat("ru-RU", {
+            style: "currency",
+            currency: "RUB",
+            maximumFractionDigits: 0
+        }).format(value);
+    };
 
     const products = [
         {
             id: "A",
             name: "Nova Sound A",
-            basePrice: 59,
+            basePrice: 4990,
             battery: "20 часов",
             weight: "220 г",
             noise: "Нет",
@@ -43,7 +51,7 @@ function startCatalog() {
         {
             id: "B",
             name: "Nova Sound B",
-            basePrice: 69,
+            basePrice: 5990,
             battery: "30 часов",
             weight: "240 г",
             noise: "Есть",
@@ -60,7 +68,7 @@ function startCatalog() {
         {
             id: "C",
             name: "Nova Sound C",
-            basePrice: 79,
+            basePrice: 6990,
             battery: "40 часов",
             weight: "260 г",
             noise: "Есть",
@@ -71,6 +79,57 @@ function startCatalog() {
             foldable: "Есть",
             range: "15 м",
             colors: "3",
+            water: "IPX4",
+            controls: "Сенсор"
+        },
+        {
+            id: "D",
+            name: "Nova Sound D",
+            basePrice: 5490,
+            battery: "25 часов",
+            weight: "190 г",
+            noise: "Нет",
+            warranty: "24 месяца",
+            bluetooth: "5.1",
+            charging: "USB-C",
+            microphone: "Есть",
+            foldable: "Есть",
+            range: "10 м",
+            colors: "4",
+            water: "Нет",
+            controls: "Кнопки"
+        },
+        {
+            id: "E",
+            name: "Nova Sound E",
+            basePrice: 6490,
+            battery: "45 часов",
+            weight: "280 г",
+            noise: "Есть",
+            warranty: "12 месяцев",
+            bluetooth: "5.3",
+            charging: "USB-C",
+            microphone: "Есть",
+            foldable: "Нет",
+            range: "15 м",
+            colors: "2",
+            water: "IPX4",
+            controls: "Кнопки"
+        },
+        {
+            id: "F",
+            name: "Nova Sound F",
+            basePrice: 7490,
+            battery: "35 часов",
+            weight: "210 г",
+            noise: "Есть",
+            warranty: "36 месяцев",
+            bluetooth: "5.3",
+            charging: "USB-C",
+            microphone: "Есть",
+            foldable: "Есть",
+            range: "15 м",
+            colors: "4",
             water: "IPX4",
             controls: "Сенсор"
         }
@@ -106,24 +165,6 @@ function startCatalog() {
     const container =
         document.getElementById("products");
 
-    const selection =
-        document.getElementById("selection");
-
-    const selectedText =
-        document.getElementById("selected-product");
-
-    const priceDetails =
-        document.getElementById("price-details");
-
-    const confirmButton =
-        document.getElementById("confirm-button");
-
-    const resetButton =
-        document.getElementById("reset-button");
-
-    const confirmationMessage =
-        document.getElementById("confirmation-message");
-
     let selectedProduct = null;
 
     function renderProducts() {
@@ -147,10 +188,23 @@ function startCatalog() {
                 card.appendChild(label);
             }
 
+
             const image = document.createElement("div");
             image.className = "product-image";
-            image.textContent = "🎧";
+
+            const photo = document.createElement("img");
+            photo.src = "images/" + product.id + ".webp";
+            photo.alt = "Наушники " + product.name;
+            photo.loading = "lazy";
+            photo.decoding = "async";
+
+            photo.onerror = function() {
+                image.textContent = "🎧";
+            };
+
+            image.appendChild(photo);
             card.appendChild(image);
+
 
             const title = document.createElement("h3");
             title.textContent = product.name;
@@ -183,7 +237,7 @@ function startCatalog() {
                     ? product.basePrice
                     : product.basePrice + SERVICE_FEE;
 
-            price.textContent = shownPrice + " €";
+            price.textContent = formatPrice(shownPrice);
             card.appendChild(price);
 
             if (experiment.darkPattern !== "hidden_costs") {
@@ -196,7 +250,21 @@ function startCatalog() {
 
             const button = document.createElement("button");
             button.type = "button";
-            button.textContent = "Выбрать";
+            
+            const cartItems = JSON.parse(
+                sessionStorage.getItem("shoplab_cart") || "[]"
+            );
+
+            const alreadyAdded = cartItems.some(
+                item => item.productId === product.id
+            );
+
+            button.textContent = alreadyAdded
+                ? "В корзине ✓"
+                : "В корзину";
+
+            button.disabled = alreadyAdded;
+
 
             button.addEventListener("click", function() {
                 chooseProduct(product);
@@ -207,135 +275,64 @@ function startCatalog() {
         });
     }
 
+    
     function chooseProduct(product) {
-        selectedProduct = product;
+        const cartItems = JSON.parse(
+            sessionStorage.getItem("shoplab_cart") || "[]"
+        );
+
+        const alreadyAdded = cartItems.some(
+            item => item.productId === product.id
+        );
+
+        if (alreadyAdded) {
+            return;
+        }
+
+        cartItems.push({
+            productId: product.id,
+            name: product.name,
+            basePrice: product.basePrice,
+            addedAt: new Date().toISOString()
+        });
+
+        sessionStorage.setItem(
+            "shoplab_cart",
+            JSON.stringify(cartItems)
+        );
 
         logEvent("product_selected", {
             productId: product.id,
             basePrice: product.basePrice
         });
 
-        document.getElementById(
-            "cart-count"
-        ).textContent = "1";
-
-        selectedText.textContent = product.name;
-
-        const total = product.basePrice + SERVICE_FEE;
-
-        priceDetails.className = "price-details";
-        priceDetails.replaceChildren();
-
-        const base = document.createElement("div");
-        base.textContent =
-            "Стоимость товара: " +
-            product.basePrice + " €";
-
-        const fee = document.createElement("div");
-        fee.textContent =
-            "Обязательный сервисный сбор: " +
-            SERVICE_FEE + " €";
-
-        const totalElement = document.createElement("div");
-        totalElement.className = "price-total";
-        totalElement.textContent =
-            "Итого: " + total + " €";
-
-        priceDetails.append(base, fee, totalElement);
-
-        selection.classList.remove("hidden");
-
-        confirmButton.disabled = false;
-        confirmButton.classList.remove("hidden");
-        confirmationMessage.classList.add("hidden");
-
-        selection.scrollIntoView({
-            behavior: "smooth"
+        logEvent("cart_item_added", {
+            productId: product.id,
+            cartSize: cartItems.length
         });
 
-        console.log("Предварительный выбор:", product.id);
+        updateCartCount();
+        renderProducts();
     }
 
-    resetButton.addEventListener("click", function() {
-        logEvent("selection_reset", {
-            previousProductId: selectedProduct?.id || null
-        });
-        selectedProduct = null;
 
-        document.getElementById(
-            "cart-count"
-        ).textContent = "0";
-
-        selection.classList.add("hidden");
-
-        console.log("Выбор сброшен");
-    });
-
-    confirmButton.addEventListener("click", function() {
-        if (!selectedProduct) {
-            return;
-        }
-
-        const total =
-            selectedProduct.basePrice + SERVICE_FEE;
-
-        const result = {
-            participantId: experiment.participantId,
-            group: experiment.group,
-            cognitiveLoad: experiment.cognitiveLoad,
-            darkPattern: experiment.darkPattern,
-            selectedProduct: selectedProduct.id,
-            basePrice: selectedProduct.basePrice,
-            serviceFee: SERVICE_FEE,
-            finalPrice: total,
-            statedBudget: preferences.budget,
-            exceedsBudget: total > preferences.budget,
-            confirmedAt: new Date().toISOString()
-        };
-
-        sessionStorage.setItem(
-            "shoplab_result",
-            JSON.stringify(result)
+    function updateCartCount() {
+        const cartItems = JSON.parse(
+            sessionStorage.getItem("shoplab_cart") || "[]"
         );
 
-        logEvent("choice_confirmed", {
-            productId: selectedProduct.id,
-            finalPrice: total,
-            exceedsBudget: result.exceedsBudget
-        });
+        document.getElementById("cart-count").textContent =
+            cartItems.length;
+    }
 
-        confirmButton.disabled = true;
-        confirmButton.classList.add("hidden");
-
-        confirmationMessage.textContent =
-             "Ваш выбор зафиксирован. " +
-            "Теперь ответьте на несколько вопросов.";
-
-        const surveyButton = document.createElement("button");
-        surveyButton.type = "button";
-        surveyButton.textContent = "Перейти к вопросам";
-        surveyButton.style.marginTop = "15px";
-
-        surveyButton.addEventListener("click", function() {
-            window.location.href = "survey.html";
-        });
-
-        confirmationMessage.replaceChildren(
-          document.createTextNode(
-          "Ваш выбор зафиксирован. Теперь ответьте на вопросы."
-            ),
-            surveyButton
-        );
-
-        confirmationMessage.classList.remove("hidden");
-
-        console.log("Результат эксперимента:", result);
-    });
-
+    
     renderProducts();
+    updateCartCount();
+
     logEvent("catalog_opened", {
-    group: experiment.group,
-    cognitiveLoad: experiment.cognitiveLoad,
-    darkPattern: experiment.darkPattern
-});
+        group: experiment.group,
+        cognitiveLoad: experiment.cognitiveLoad,
+        darkPattern: experiment.darkPattern,
+        studyVersion: "shoplab-2.2-multi-cart"
+    });
 }
