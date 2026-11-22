@@ -34,6 +34,42 @@ function startCatalog() {
     const products = SHOPLAB_PRODUCTS.map(product => ({...product, ...pricing.products[product.id]}));
     const visibleAttributes = getVisibleAttributes(experiment.cognitiveLoad);
 
+    const sortSelect = document.getElementById("catalog-sort");
+    let sortMode = "default";
+
+    // Sort using the exact price visible in this experimental condition.
+    function displayedPrice(product) {
+        return experiment.darkPattern === "hidden_costs"
+            ? product.basePrice
+            : product.basePrice + SERVICE_FEE;
+    }
+
+    function sortedProducts() {
+        const ordered = [...products];
+        if (sortMode === "price_asc") {
+            ordered.sort((a, b) => displayedPrice(a) - displayedPrice(b));
+        } else if (sortMode === "price_desc") {
+            ordered.sort((a, b) => displayedPrice(b) - displayedPrice(a));
+        }
+        return ordered;
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener("change", function() {
+            const nextMode = sortSelect.value;
+            if (!["default", "price_asc", "price_desc"].includes(nextMode)) return;
+            if (nextMode === sortMode) return;
+            sortMode = nextMode;
+            logEvent("catalog_sorted", {
+                sortMode,
+                visiblePriceType: experiment.darkPattern === "hidden_costs"
+                    ? "base_price" : "final_price",
+                orderedProductIds: sortedProducts().map(product => product.id)
+            });
+            renderProducts();
+        });
+    }
+
     const container =
         document.getElementById("products");
 
@@ -41,7 +77,7 @@ function startCatalog() {
     function renderProducts() {
         container.innerHTML = "";
 
-        products.forEach(function(product) {
+        sortedProducts().forEach(function(product) {
             const card = document.createElement("article");
             card.className = "product-card";
 
