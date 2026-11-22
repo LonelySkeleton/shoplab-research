@@ -11,26 +11,39 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="tracking.js" defer></script>
+    <script src="store-nav.js" defer></script>
     <script src="products.js" defer></script>
     <script src="pricing.js" defer></script>
     <script src="cart.js" defer></script>
 </head>
 
 <body>
-<header class="header">
-    <div class="header-inner">
-        <h1>ShopLab</h1>
-        <span>Экспериментальный магазин</span>
+<header class="header store-header">
+    <div class="header-inner store-header-main">
+        <a class="store-brand" href="catalog.html#store-top" aria-label="ShopLab — главная страница магазина">
+            <span class="store-brand-icon" aria-hidden="true">♫</span>
+            <span>ShopLab<small>аудиотехника</small></span>
+        </a>
+        <a href="cart.html" class="cart-link store-cart-link" aria-label="Открыть корзину">
+            <span aria-hidden="true">🛒</span> Корзина <span class="store-cart-count" id="cart-count">0</span>
+        </a>
     </div>
+    <nav class="store-nav" aria-label="Разделы магазина">
+        <div class="store-nav-inner">
+            <a href="catalog.html#store-top" class="store-nav-home">Главная</a>
+            <a href="catalog.html#products" class="store-nav-catalog">Каталог</a>
+            <a href="catalog.html#about-store" class="store-nav-about">О магазине</a>
+        </div>
+    </nav>
 </header>
 
 <main class="container">
+    <nav class="breadcrumbs" aria-label="Навигационная цепочка"><a href="catalog.html#store-top">Главная</a> / <a href="catalog.html#products">Каталог</a> / Корзина</nav>
     <section class="questionnaire">
         <h2>Ваша корзина</h2>
 
         <p class="subtitle">
-            Проверьте выбранный товар.
-            Это имитация покупки — оплата не требуется.
+            Сравните добавленные модели и подтвердите окончательный выбор.
         </p>
 
         <div id="cart-product"></div>

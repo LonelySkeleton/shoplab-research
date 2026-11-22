@@ -107,6 +107,25 @@
                 оставьте поле пустым.
             </p>
 
+            <div id="budget-reason-section" class="conditional-question hidden">
+                <label for="budget-reason">
+                    Что в наибольшей степени повлияло на решение
+                    выбрать модель дороже указанного бюджета?
+                </label>
+                <select id="budget-reason">
+                    <option value="">Выберите ответ</option>
+                    <option value="features">Характеристики оказались важнее цены</option>
+                    <option value="alternatives">Другие модели подходили меньше</option>
+                    <option value="unnoticed">Не обратил(а) внимания на итоговую стоимость</option>
+                    <option value="approximate">Бюджет был приблизительным</option>
+                    <option value="other">Другая причина</option>
+                </select>
+                <label for="budget-reason-other" id="budget-reason-other-label" class="hidden">
+                    Укажите другую причину (необязательно)
+                </label>
+                <textarea id="budget-reason-other" rows="3" class="hidden"></textarea>
+            </div>
+
             <label for="pressure">
                 В какой степени оформление магазина
                 повлияло на ваш выбор товара?
@@ -167,7 +186,9 @@
             <p>
                 Эти особенности были созданы
                 специально для исследования.
-                Все товары вымышленные.
+                Все товары вымышленные, а отзывы и имена их авторов
+                подготовлены специально для исследовательского задания
+                и не принадлежат реальным покупателям.
                 Реальная покупка не совершалась.
             </p>
 

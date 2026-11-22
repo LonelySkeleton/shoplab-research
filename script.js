@@ -100,6 +100,58 @@ function startCatalog() {
 
             card.appendChild(list);
 
+            // Дополнительная информация: количество отзывов зависит от нагрузки.
+            const reviews = getProductReviews(product.id, experiment.cognitiveLoad);
+            const reviewsBlock = document.createElement("div");
+            reviewsBlock.className = "product-reviews";
+
+            const reviewsButton = document.createElement("button");
+            reviewsButton.type = "button";
+            reviewsButton.className = "reviews-toggle";
+            reviewsButton.textContent = "Отзывы (" + reviews.length + ")";
+            reviewsButton.setAttribute("aria-expanded", "false");
+
+            const reviewsList = document.createElement("div");
+            reviewsList.className = "reviews-list";
+            reviewsList.hidden = true;
+            reviewsList.id = "reviews-" + product.id;
+            reviewsButton.setAttribute("aria-controls", reviewsList.id);
+
+            reviews.forEach(function(review) {
+                const entry = document.createElement("article");
+                entry.className = "review-entry";
+
+                const author = document.createElement("div");
+                author.className = "review-author";
+                author.textContent = review.nickname;
+
+                const message = document.createElement("p");
+                message.className = "review-text";
+                message.textContent = review.text;
+
+                entry.appendChild(author);
+                entry.appendChild(message);
+                reviewsList.appendChild(entry);
+            });
+
+            reviewsButton.addEventListener("click", function() {
+                const opening = reviewsList.hidden;
+                reviewsList.hidden = !opening;
+                reviewsButton.setAttribute("aria-expanded", String(opening));
+                reviewsButton.textContent = opening
+                    ? "Скрыть отзывы (" + reviews.length + ")"
+                    : "Отзывы (" + reviews.length + ")";
+                logEvent(opening ? "reviews_opened" : "reviews_closed", {
+                    productId: product.id,
+                    reviewCount: reviews.length,
+                    cognitiveLoad: experiment.cognitiveLoad
+                });
+            });
+
+            reviewsBlock.appendChild(reviewsButton);
+            reviewsBlock.appendChild(reviewsList);
+            card.appendChild(reviewsBlock);
+
             const price = document.createElement("div");
             price.className = "price";
 
@@ -131,7 +183,7 @@ function startCatalog() {
             );
 
             button.textContent = alreadyAdded
-                ? "Удалить из корзины"
+                ? "Убрать из выбранных"
                 : "В корзину";
 
             if (alreadyAdded) {

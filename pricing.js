@@ -1,4 +1,4 @@
-const SHOPLAB_VERSION = "shoplab-3.0";
+const SHOPLAB_VERSION = "shoplab-3.6-cart-prices";
 const MIN_BUDGET = 2000;
 const MAX_BUDGET = 30000;
 function validBudget(budget) {

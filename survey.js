@@ -71,6 +71,22 @@ function downloadResults(data) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+const budgetReasonSection = document.getElementById("budget-reason-section");
+const budgetReasonSelect = document.getElementById("budget-reason");
+const budgetReasonOther = document.getElementById("budget-reason-other");
+const budgetReasonOtherLabel = document.getElementById("budget-reason-other-label");
+const exceededBudget = existingResult && Number(existingResult.finalPrice) > Number(existingResult.statedBudget);
+if (exceededBudget) {
+    budgetReasonSection.classList.remove("hidden");
+    budgetReasonSelect.required = true;
+}
+budgetReasonSelect.addEventListener("change", function() {
+    const showOther = budgetReasonSelect.value === "other";
+    budgetReasonOther.classList.toggle("hidden", !showOther);
+    budgetReasonOtherLabel.classList.toggle("hidden", !showOther);
+    if (!showOther) budgetReasonOther.value = "";
+});
+
 surveyForm.addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -103,6 +119,9 @@ surveyForm.addEventListener("submit", async function(event) {
                         "price-awareness"
                     ).value
                 ),
+        budgetExcessReason: exceededBudget ? budgetReasonSelect.value : null,
+        budgetExcessReasonOther: exceededBudget && budgetReasonSelect.value === "other"
+            ? budgetReasonOther.value.trim() : null,
         realism: Number(document.getElementById("realism").value),
         perceivedPressure: Number(
             document.getElementById("pressure").value

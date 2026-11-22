@@ -12,24 +12,35 @@
 
     <script src="experiment.js" defer></script>
     <script src="tracking.js" defer></script>
+    <script src="store-nav.js" defer></script>
     <script src="products.js" defer></script>
     <script src="pricing.js" defer></script>
+    <script src="reviews.js" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
 
-<header class="header">
-    <div class="header-inner">
-        <h1>ShopLab</h1>
-
-        <a href="cart.html" class="cart-link">
-            🛒 Корзина
-            (<span id="cart-count">0</span>)
+<header class="header store-header">
+    <div class="header-inner store-header-main">
+        <a class="store-brand" href="catalog.html#store-top" aria-label="ShopLab — главная страница магазина">
+            <span class="store-brand-icon" aria-hidden="true">♫</span>
+            <span>ShopLab<small>аудиотехника</small></span>
+        </a>
+        <a href="cart.html" class="cart-link store-cart-link" aria-label="Открыть корзину">
+            <span aria-hidden="true">🛒</span> Корзина <span class="store-cart-count" id="cart-count">0</span>
         </a>
     </div>
+    <nav class="store-nav" aria-label="Разделы магазина">
+        <div class="store-nav-inner">
+            <a href="catalog.html#store-top" class="store-nav-home">Главная</a>
+            <a href="catalog.html#products" class="store-nav-catalog">Каталог</a>
+            <a href="catalog.html#about-store" class="store-nav-about">О магазине</a>
+        </div>
+    </nav>
 </header>
 
-<main class="container">
+<main class="container" id="store-top">
+    <nav class="breadcrumbs" aria-label="Навигация"><a href="catalog.html#store-top">Главная</a> / <a href="catalog.html#products">Каталог</a> / Наушники</nav>
     <h2>Выберите наушники</h2>
 
     <p class="subtitle">
@@ -37,6 +48,14 @@
         товары в корзину и выберите один
         для окончательного подтверждения.
     </p>
+
+    <section id="about-store" class="store-about store-about-compact" aria-label="О магазине">
+        <div class="store-about-icon" aria-hidden="true">♫</div>
+        <div>
+            <h2>О ShopLab</h2>
+            <p>Магазин аудиотехники с подборкой беспроводных полноразмерных наушников.</p>
+        </div>
+    </section>
 
     <section
         id="products"

@@ -1,7 +1,8 @@
 const SHOPLAB_PRODUCTS = [
     {
         id: "A",
-        name: "Nova Sound A",
+        brand: "Averon",
+        name: "Averon H20",
         basePrice: 4990,
         battery: "20 часов",
         weight: "220 г",
@@ -18,7 +19,8 @@ const SHOPLAB_PRODUCTS = [
     },
     {
         id: "B",
-        name: "Nova Sound B",
+        brand: "Belmar",
+        name: "Belmar H30",
         basePrice: 5990,
         battery: "30 часов",
         weight: "240 г",
@@ -35,7 +37,8 @@ const SHOPLAB_PRODUCTS = [
     },
     {
         id: "C",
-        name: "Nova Sound C",
+        brand: "Cevian",
+        name: "Cevian H40",
         basePrice: 6990,
         battery: "40 часов",
         weight: "260 г",
@@ -52,7 +55,8 @@ const SHOPLAB_PRODUCTS = [
     },
     {
         id: "D",
-        name: "Nova Sound D",
+        brand: "Deltro",
+        name: "Deltro H25",
         basePrice: 5490,
         battery: "25 часов",
         weight: "190 г",
@@ -69,7 +73,8 @@ const SHOPLAB_PRODUCTS = [
     },
     {
         id: "E",
-        name: "Nova Sound E",
+        brand: "Elnor",
+        name: "Elnor H45",
         basePrice: 6490,
         battery: "45 часов",
         weight: "280 г",
@@ -86,7 +91,8 @@ const SHOPLAB_PRODUCTS = [
     },
     {
         id: "F",
-        name: "Nova Sound F",
+        brand: "Feron",
+        name: "Feron H35",
         basePrice: 7490,
         battery: "35 часов",
         weight: "210 г",

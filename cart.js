@@ -108,16 +108,21 @@ function startCart() {
             };
 
 
-            const price = document.createElement("p");
-            price.textContent =
-                "Цена товара: " +
-                formatPrice(item.basePrice) +
-                " + сбор " +
-                formatPrice(SERVICE_FEE) +
-                " = " +
-                formatPrice(
-                    Number(item.basePrice) + SERVICE_FEE
-                );
+            // В карточке отображается итоговая цена, без арифметической строки.
+            // Момент раскрытия обязательного сбора не меняется: он виден в корзине.
+            const price = document.createElement("div");
+            price.className = "cart-item-price";
+
+            const priceAmount = document.createElement("strong");
+            priceAmount.className = "cart-item-price-amount";
+            priceAmount.textContent = formatPrice(
+                Number(item.basePrice) + SERVICE_FEE
+            );
+
+            const priceCaption = document.createElement("span");
+            priceCaption.className = "cart-item-price-caption";
+            priceCaption.textContent = "С учётом обязательного сбора";
+            price.append(priceAmount, priceCaption);
 
             radio.addEventListener("change", function() {
                 selectedId = item.productId;
@@ -150,15 +155,26 @@ function startCart() {
                 const total =
                     Number(selected.basePrice) + SERVICE_FEE;
 
-                const totalElement =
-                    document.createElement("div");
+                const heading = document.createElement("h3");
+                heading.className = "cart-price-heading";
+                heading.textContent = "Детали стоимости";
+                priceContainer.appendChild(heading);
 
-                totalElement.className = "price-total";
-                totalElement.textContent =
-                    "Итого за выбранный товар: " +
-                    formatPrice(total);
+                function addPriceRow(label, value, isTotal = false) {
+                    const row = document.createElement("div");
+                    row.className = "cart-price-row" +
+                        (isTotal ? " cart-price-row-total" : "");
+                    const name = document.createElement("span");
+                    name.textContent = label;
+                    const amount = document.createElement("strong");
+                    amount.textContent = formatPrice(value);
+                    row.append(name, amount);
+                    priceContainer.appendChild(row);
+                }
 
-                priceContainer.appendChild(totalElement);
+                addPriceRow("Стоимость товара", Number(selected.basePrice));
+                addPriceRow("Обязательный сервисный сбор", SERVICE_FEE);
+                addPriceRow("Итого", total, true);
                 confirmButton.disabled = false;
             }
         }
