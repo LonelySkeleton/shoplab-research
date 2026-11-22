@@ -54,8 +54,16 @@ consentForm.addEventListener("submit", function(event) {
 declineButton.addEventListener("click", function() {
     clearPreviousSession();
 
-    consentForm.classList.add("hidden");
+    // Показываем только сообщение об отказе, скрывая всё приглашение.
+    const questionnaire = document.querySelector(".questionnaire");
+    const declineMessage = document.getElementById("decline-message");
 
-    document.getElementById("decline-message")
-        .classList.remove("hidden");
+    if (questionnaire && declineMessage) {
+        Array.from(questionnaire.children).forEach(function(element) {
+            if (element !== declineMessage) {
+                element.classList.add("hidden");
+            }
+        });
+        declineMessage.classList.remove("hidden");
+    }
 });
