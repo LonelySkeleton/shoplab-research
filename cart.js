@@ -53,6 +53,8 @@ function startCart() {
 
     cartItems = cartItems.map(item => ({...item, basePrice: pricing.products[item.productId].basePrice}));
     let selectedId = null;
+    const isHiddenCosts = experiment.darkPattern === "hidden_costs";
+    let priceDetailsOpened = false;
 
     function saveCart() {
         sessionStorage.setItem(
@@ -119,13 +121,12 @@ function startCart() {
                 Number(item.basePrice) + SERVICE_FEE
             );
 
-            const priceCaption = document.createElement("span");
-            priceCaption.className = "cart-item-price-caption";
-            priceCaption.textContent = "С учётом обязательного сбора";
-            price.append(priceAmount, priceCaption);
+            // На карточке только итоговая стоимость. Состав доступен ниже.
+            price.append(priceAmount);
 
             radio.addEventListener("change", function() {
                 selectedId = item.productId;
+                priceDetailsOpened = false;
 
                 logEvent("cart_product_compared", {
                     productId: selectedId
@@ -155,12 +156,7 @@ function startCart() {
                 const total =
                     Number(selected.basePrice) + SERVICE_FEE;
 
-                const heading = document.createElement("h3");
-                heading.className = "cart-price-heading";
-                heading.textContent = "Детали стоимости";
-                priceContainer.appendChild(heading);
-
-                function addPriceRow(label, value, isTotal = false) {
+                function addPriceRow(container, label, value, isTotal = false) {
                     const row = document.createElement("div");
                     row.className = "cart-price-row" +
                         (isTotal ? " cart-price-row-total" : "");
@@ -169,12 +165,54 @@ function startCart() {
                     const amount = document.createElement("strong");
                     amount.textContent = formatPrice(value);
                     row.append(name, amount);
-                    priceContainer.appendChild(row);
+                    container.appendChild(row);
                 }
 
-                addPriceRow("Стоимость товара", Number(selected.basePrice));
-                addPriceRow("Обязательный сервисный сбор", SERVICE_FEE);
-                addPriceRow("Итого", total, true);
+                function addBreakdown(container) {
+                    addPriceRow(container, "Стоимость товара", Number(selected.basePrice));
+                    addPriceRow(container, "Обязательный сервисный сбор", SERVICE_FEE);
+                }
+
+                if (isHiddenCosts) {
+                    // Полная итоговая цена видна до подтверждения.
+                    // Детализация скрыта только визуально, но доступна по кнопке.
+                    addPriceRow(priceContainer, "Итого за выбранный товар", total, true);
+
+                    const toggle = document.createElement("button");
+                    toggle.type = "button";
+                    toggle.className = "price-breakdown-toggle";
+                    toggle.textContent = priceDetailsOpened
+                        ? "Скрыть состав стоимости" : "Состав стоимости";
+                    toggle.setAttribute("aria-expanded", String(priceDetailsOpened));
+                    toggle.setAttribute("aria-controls", "price-breakdown-content");
+                    priceContainer.appendChild(toggle);
+
+                    const breakdown = document.createElement("div");
+                    breakdown.id = "price-breakdown-content";
+                    breakdown.className = "price-breakdown-content";
+                    breakdown.hidden = !priceDetailsOpened;
+                    addBreakdown(breakdown);
+                    priceContainer.appendChild(breakdown);
+
+                    toggle.addEventListener("click", function() {
+                        priceDetailsOpened = !priceDetailsOpened;
+                        breakdown.hidden = !priceDetailsOpened;
+                        toggle.setAttribute("aria-expanded", String(priceDetailsOpened));
+                        toggle.textContent = priceDetailsOpened
+                            ? "Скрыть состав стоимости" : "Состав стоимости";
+                        logEvent(priceDetailsOpened ? "price_details_opened" : "price_details_closed", {
+                            productId: selectedId,
+                            darkPattern: experiment.darkPattern
+                        });
+                    });
+                } else {
+                    const heading = document.createElement("h3");
+                    heading.className = "cart-price-heading";
+                    heading.textContent = "Детали стоимости";
+                    priceContainer.appendChild(heading);
+                    addBreakdown(priceContainer);
+                    addPriceRow(priceContainer, "Итого", total, true);
+                }
                 confirmButton.disabled = false;
             }
         }

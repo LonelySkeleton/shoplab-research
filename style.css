@@ -478,3 +478,36 @@ body:has(#products) .store-nav-catalog { border-bottom-color: #d8f56b !important
     .catalog-sort-control { width: 100%; justify-content: space-between; }
     .catalog-sort-control select { min-width: 0; flex: 1; max-width: 240px; }
 }
+
+
+/* ShopLab 3.9 — раскрываемая детализация цены в hidden_costs */
+#cart-price-details .price-breakdown-toggle {
+    display: block;
+    width: auto;
+    margin: 14px 0 0;
+    padding: 7px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #365b65;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+#cart-price-details .price-breakdown-toggle:hover,
+#cart-price-details .price-breakdown-toggle:focus-visible {
+    background: transparent;
+    color: #0c6767;
+    transform: none;
+}
+#cart-price-details .price-breakdown-content {
+    padding: 14px 0 0;
+    border-top: 1px solid #c4dfd4;
+    margin-top: 8px;
+}
+#cart-price-details .price-breakdown-content[hidden] { display: none; }
+#cart-price-details .price-breakdown-content .cart-price-row:last-child { margin-bottom: 0; }
